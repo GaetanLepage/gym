@@ -88,7 +88,11 @@ class AsyncVectorEnv(VectorEnv):
         daemon=True,
         worker=None,
     ):
-        ctx = mp.get_context(context)
+        if isinstance(context, mp.context.SpawnContext):
+            ctx = context
+        else:
+            ctx = mp.get_context(context)
+
         self.env_fns = env_fns
         self.shared_memory = shared_memory
         self.copy = copy
